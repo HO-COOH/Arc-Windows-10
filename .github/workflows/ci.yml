@@ -29,6 +29,7 @@ jobs:
       - name: Set tag
         id: set-tag
         run: echo "tag=%DATE%%TIME%" >> "$GITHUB_OUTPUT"
+        shell: cmd
 
       - name: Release
         env:
