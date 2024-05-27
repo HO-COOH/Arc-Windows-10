@@ -9,12 +9,17 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+  push:
+    branches:
+      -main
+
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: self-hosted
+    runs-on: [self-hosted, windows-latest]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:

@@ -152,7 +152,8 @@ function AddInstallerScript {
 }
 
 function ZipArtifact {
-    Compress-Archive -Path "Arc" -DestinationPath Arc.zip
+    $version = (Get-AppxPackage -Name TheBrowserCompany.Arc).Version
+    Compress-Archive -Path "Arc" -DestinationPath "Arc-$version.zip"
 }
 
 
@@ -212,10 +213,10 @@ if (Check-Installed-Version -PackageName $mainPackage.Name -PackageVersion $main
     Install-Fonts
     $webClient.DownloadFile($mainPackage.Uri, $localMainPackagePath)
     Add-AppxPackageSafe -PackagePath $localMainPackagePath -PackageName $mainPackage.Name
-    ModifyManifest
-    AddInstallerScript
-    ZipArtifact
 }
+ModifyManifest
+AddInstallerScript
+ZipArtifact
 
 $webClient.Dispose()
 
