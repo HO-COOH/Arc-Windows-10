@@ -25,19 +25,15 @@ jobs:
       - name: run script
         run: powershell -ExecutionPolicy Bypass -C "$env:GITHUB_WORKSPACE/arcwin10-1.2.4.ps1"
         shell: pwsh
-        
-      - name: Tag the repository
-        id: tag
-        run: |
-          # See https://docs.github.com/en/get-started/using-git/dealing-with-special-characters-in-branch-and-tag-names
-          TAG=v$(date -Iseconds | sed 's/[T:\+]/-/g')
-          echo "$TAG"
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
-          git tag -a $TAG -m "Published version $TAG" ${GITHUB_SHA}
-          git push origin $TAG
-          
+
+      - name: Set tag
+        id: set-tag
+        run: echo "tag=%DATE%%TIME%" >> "$GITHUB_OUTPUT"
+
       - name: Release
+        env:
+          tag: ${{steps.set-tag.outputs.tag}}
         uses: softprops/action-gh-release@v2
         with:
           files: Arc.zip
-          tag_name: ${{ steps.tag.outputs.tag }}
+          tag_name: $tag
