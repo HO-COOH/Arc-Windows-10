@@ -136,6 +136,26 @@ function DownloadAndInstallDependency {
     Add-AppxPackage -Path $localPath
 }
 
+function ModifyManifest {
+    $installLocation = (Get-AppxPackage -Name TheBrowserCompany.Arc).InstallLocation
+    $copiedPath = "Arc"
+    Copy-Item -Path $installLocation -Recurse -Destination $copiedPath
+    $xmlPath = "$copiedPath/AppxManifest.xml"
+    $xml = New-Object xml
+    $xml.Load($xmlPath)
+    $xml.Package.Dependencies.TargetDeviceFamily.MinVersion = "10.0.17763.0"
+    $xml.Save($xmlPath)
+}
+
+function AddInstallerScript {
+    Set-Content -Path "Arc/Install.bat" -Value 'powershell -ExecutionPolicy ByPass -Command "Add-AppxPackage -register AppxManifest.xml"'
+}
+
+function ZipArtifact {
+    Compress-Archive -Path "Arc" -DestinationPath Arc.zip
+}
+
+
 $dependenciesToCheck = @(
     @{Name="Microsoft.WindowsAppRuntime.1.5"; Architecture="x64"},
     @{Name="Microsoft.VCLibs.140.00.UWPDesktop"; Architecture="x64"}
@@ -190,11 +210,11 @@ if (Check-Installed-Version -PackageName $mainPackage.Name -PackageVersion $main
         }
     }
     Install-Fonts
-    $originalUBRHex, $originalType = Set-UBR -newUBR "ffffffff" -type 'DWord'
     $webClient.DownloadFile($mainPackage.Uri, $localMainPackagePath)
     Add-AppxPackageSafe -PackagePath $localMainPackagePath -PackageName $mainPackage.Name
-    Set-UBR -newUBR $originalUBRHex -type 'DWord'
-    Log "UBR restored to original value: $originalUBRHex, Type: $originalType"
+    ModifyManifest
+    AddInstallerScript
+    ZipArtifact
 }
 
 $webClient.Dispose()
