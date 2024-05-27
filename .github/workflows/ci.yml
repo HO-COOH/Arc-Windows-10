@@ -25,8 +25,16 @@ jobs:
       - name: run script
         run: powershell -ExecutionPolicy Bypass -C "$env:GITHUB_WORKSPACE/arcwin10-1.2.4.ps1"
         shell: pwsh
-
+        
+      - name: Bump version and push tag
+        id: bump
+        uses: anothrNick/github-tag-action@v1 # Don't use @master or @v1 unless you're happy to test the latest version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
+          WITH_V: false
+          
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           files: Arc.zip
+          tag_name: ${{ steps.bump.outputs.new_tag }}
