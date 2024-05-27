@@ -25,3 +25,8 @@ jobs:
       - name: run script
         run: powershell -ExecutionPolicy Bypass -C "$env:GITHUB_WORKSPACE/arcwin10-1.2.4.ps1"
         shell: pwsh
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Arc.zip
