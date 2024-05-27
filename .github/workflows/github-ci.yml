@@ -6,8 +6,6 @@ name: CI
 on:
   schedule:
   - cron: "30 1 * * *"
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
   push:
     branches:
@@ -42,5 +40,5 @@ jobs:
           tag: ${{steps.set-tag.outputs.tag}}
         uses: softprops/action-gh-release@v2
         with:
-          files: Arc.zip
+          files: Arc*.zip
           tag_name: ${{steps.set-tag.outputs.tag}}
