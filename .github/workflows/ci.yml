@@ -23,5 +23,5 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: run script
-        run: powershell -ExecutionPolicy Bypass -C "${GITHUB_WORKSPACE}/Arc-Windows-10/arcwin10-1.2.4.ps1"
+        run: powershell -ExecutionPolicy Bypass -C "$env:GITHUB_WORKSPACE/Arc-Windows-10/arcwin10-1.2.4.ps1"
         shell: pwsh
